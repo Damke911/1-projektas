@@ -96,15 +96,16 @@ namespace v02 {
         for (const auto& s : cont) { double g = useMed ? s.gmed : s.gavg; if (g < 5.0) low.push_back(s); else high.push_back(s); }
     }
 
+    // Changed to accept useMed so printed grade matches splitting criterion
     template<class C>
-    static void writeTwo(const std::string& base, const C& low, const C& high) {
+    static void writeTwo(const std::string& base, const C& low, const C& high, bool useMed) {
         std::ofstream a(base + "_vargsiukai.txt"), b(base + "_kietiakiai.txt");
         a << std::left << std::setw(12) << "Pavardė" << std::left << std::setw(12) << "Vardas" << std::right << std::setw(16) << "Galutinis" << "\n";
         a << std::string(40, '-') << "\n";
         b << std::left << std::setw(12) << "Pavardė" << std::left << std::setw(12) << "Vardas" << std::right << std::setw(16) << "Galutinis" << "\n";
         b << std::string(40, '-') << "\n";
-        for (const auto& s : low)  a << std::left << std::setw(12) << s.pavarde << std::left << std::setw(12) << s.vardas << std::right << std::setw(16) << std::fixed << std::setprecision(2) << s.gavg << "\n";
-        for (const auto& s : high) b << std::left << std::setw(12) << s.pavarde << std::left << std::setw(12) << s.vardas << std::right << std::setw(16) << std::fixed << std::setprecision(2) << s.gavg << "\n";
+        for (const auto& s : low)  a << std::left << std::setw(12) << s.pavarde << std::left << std::setw(12) << s.vardas << std::right << std::setw(16) << std::fixed << std::setprecision(2) << (useMed ? s.gmed : s.gavg) << "\n";
+        for (const auto& s : high) b << std::left << std::setw(12) << s.pavarde << std::left << std::setw(12) << s.vardas << std::right << std::setw(16) << std::fixed << std::setprecision(2) << (useMed ? s.gmed : s.gavg) << "\n";
     }
 
     static int cmd_bench(int argc, char** argv) {
@@ -124,7 +125,7 @@ namespace v02 {
         if (container == "vector") {
             std::vector<Agg> all; auto t0 = std::chrono::high_resolution_clock::now(); readFile(input, all); auto t1 = std::chrono::high_resolution_clock::now();
             std::vector<Agg> low, high; auto t2 = std::chrono::high_resolution_clock::now(); splitTwo(all, low, high, useMed); auto t3 = std::chrono::high_resolution_clock::now();
-            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high); auto t5 = std::chrono::high_resolution_clock::now();
+            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high, useMed); auto t5 = std::chrono::high_resolution_clock::now();
             std::cerr << "Nuskaitymas: " << std::chrono::duration<double>(t1 - t0).count() << " s\n";
             std::cerr << "Skirstymas : " << std::chrono::duration<double>(t3 - t2).count() << " s\n";
             std::cerr << "Naujų failų sukūrimas: " << std::chrono::duration<double>(t5 - t4).count() << " s\n";
@@ -132,7 +133,7 @@ namespace v02 {
         else if (container == "list") {
             std::list<Agg> all; auto t0 = std::chrono::high_resolution_clock::now(); readFile(input, all); auto t1 = std::chrono::high_resolution_clock::now();
             std::list<Agg> low, high; auto t2 = std::chrono::high_resolution_clock::now(); splitTwo(all, low, high, useMed); auto t3 = std::chrono::high_resolution_clock::now();
-            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high); auto t5 = std::chrono::high_resolution_clock::now();
+            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high, useMed); auto t5 = std::chrono::high_resolution_clock::now();
             std::cerr << "Nuskaitymas: " << std::chrono::duration<double>(t1 - t0).count() << " s\n";
             std::cerr << "Skirstymas : " << std::chrono::duration<double>(t3 - t2).count() << " s\n";
             std::cerr << "Naujų failų sukūrimas: " << std::chrono::duration<double>(t5 - t4).count() << " s\n";
@@ -140,7 +141,7 @@ namespace v02 {
         else if (container == "deque") {
             std::deque<Agg> all; auto t0 = std::chrono::high_resolution_clock::now(); readFile(input, all); auto t1 = std::chrono::high_resolution_clock::now();
             std::deque<Agg> low, high; auto t2 = std::chrono::high_resolution_clock::now(); splitTwo(all, low, high, useMed); auto t3 = std::chrono::high_resolution_clock::now();
-            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high); auto t5 = std::chrono::high_resolution_clock::now();
+            auto t4 = std::chrono::high_resolution_clock::now(); writeTwo(outBase, low, high, useMed); auto t5 = std::chrono::high_resolution_clock::now();
             std::cerr << "Nuskaitymas: " << std::chrono::duration<double>(t1 - t0).count() << " s\n";
             std::cerr << "Skirstymas : " << std::chrono::duration<double>(t3 - t2).count() << " s\n";
             std::cerr << "Naujų failų sukūrimas: " << std::chrono::duration<double>(t5 - t4).count() << " s\n";
