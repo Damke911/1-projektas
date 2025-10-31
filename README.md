@@ -39,18 +39,27 @@ Sistema leidžia:
 
 ---
 
-## ⚙️ Įdiegimas
+▶️ Naudojimas
+Studentų duomenų failas
 
-### 1️⃣ Reikalavimai
-- **Windows 10+**  
-- **Visual Studio 2022** su `C++ Desktop Development`
-- **CMake ≥ 3.16**
+Failas (students_100000.txt) turi būti formato:
 
-### 2️⃣ Projekto sukūrimas
+Pavardė     Vardas      ND1 ND2 ND3 ND4 ND5 Egzaminas
+Pavarde1    Vardas1     5   8   9   10  7   8
+Pavarde2    Vardas2     3   5   6   4   7   6
+...
 
-Atidaryk **x64 Native Tools Command Prompt for VS 2022** ir paleisk:
+Paleidimo pavyzdžiai
+1 strategija – du nauji konteineriai:
 
-```bat
-cd C:\Users\admin\source\repos\darbas\studentai
-cmake -S . -B build -G "NMake Makefiles"
-cmake --build build
+build\v10_bench.exe bench1 --input=data\students_100000.txt --container=vector --mode=avg --out=rez_s1
+
+| Strategija  | Konteineris | 100k įrašų (s) | 1M įrašų (s) | Pastabos              |
+| ----------- | ----------- | -------------- | ------------ | --------------------- |
+| 1           | `vector`    | 0.23           | 2.84         | greičiausias          |
+| 1           | `list`      | 0.45           | 5.22         | lėtesnis              |
+| 2           | `deque`     | 0.38           | 3.40         | atminties efektyviau  |
+| Optimizuota | `vector`    | 0.18           | 2.12         | geriausias rezultatas |
+
+Autorius: Tomas Damkauskas
+Data: 2025-10-31
